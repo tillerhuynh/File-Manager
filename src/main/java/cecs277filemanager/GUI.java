@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -34,7 +35,7 @@ class GUI extends JFrame{
     JMenuBar menubar, statusbar, toolBar;
     JScrollPane scrollpane;
     JDesktopPane desktopPane;
-    
+    dirReader drivereader;
     
     public GUI(){
         panel = new JPanel();
@@ -42,14 +43,14 @@ class GUI extends JFrame{
         toolBar = new JMenuBar();
         desktopPane = new JDesktopPane();
         panel.setLayout(new BorderLayout());
+        drivereader = new dirReader();
+        
     }
     
     public void go(){
-        DirPanel tree = new DirPanel();
         MenuBuilder menuBuild = new MenuBuilder();
-//        statBar status = new statBar();
         
-       
+//        statBar status = new statBar();
         this.setJMenuBar(menuBuild.buildMenu());
         buildStatusBar();
         buildtoolBar();
@@ -65,26 +66,36 @@ class GUI extends JFrame{
         this.setSize(900,900);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
-       
-        
-        tree.loadTree();
-       
+
+     
+  
     }
   
-    private void buildStatusBar(){
+    public void buildStatusBar(){
         JLabel size = new JLabel("Size in GB:");
         statusbar.add(size);
         panel.add(statusbar, BorderLayout.SOUTH);
         //TODO update the status bar
     }
     
-    private void buildtoolBar(){
+
+    public void buildtoolBar(){
 
         // the buttons for the toolbar
         JButton detailsButton = new JButton("Details");
         JButton simpleButton = new JButton("Simple");
         toolBar.add(detailsButton);
         toolBar.add(simpleButton);
+        
+        JComboBox comboBox = new JComboBox();
+        File[] drive = drivereader.getCurrentDrives();
+        for (File files : drive){
+            comboBox.addItem(files.toString() + drivereader.getDriveNames(files));
+        }
+        comboBox.addActionListener(new ComboBoxActionListener());
+        
+        toolBar.add(comboBox);
+        
         toolBar.setLayout(new GridBagLayout());
         panel.add(toolBar, BorderLayout.NORTH);
         /*TODO LIST
@@ -93,7 +104,20 @@ class GUI extends JFrame{
             implement simple
                 simples should redraw the right scrollpane without file sizes and dates
         */
-       /////
     }
+    
+    public class ComboBoxActionListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JComboBox cb = (JComboBox)e.getSource();
+            String driveName = (String)cb.getSelectedItem();
+            
+       
+        }
+       
+    }
+    
+   
        
 }

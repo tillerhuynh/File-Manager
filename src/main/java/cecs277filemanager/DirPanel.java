@@ -29,33 +29,36 @@ public class DirPanel extends JPanel{
     public DirPanel(){
         
         this.scrollpane = new JScrollPane();
-        JTree dirtree = new JTree();
+
+        dirtree = new JTree();
         scrollpane.setViewportView(dirtree);
         this.setLayout(new BorderLayout());
         this.add(scrollpane, BorderLayout.CENTER);
         add(scrollpane);
-        tree = new JTree();
-        tree.setPreferredSize(new Dimension(400, 400));
         
+        dirtree.setPreferredSize(new Dimension(400, 400));
+        loadTree();
     }
     
     public void loadTree(){
-        File drive = new File(FileFrame.driveSelected);
-
-        //File drive = drives[0];
+//        File drive = new File(FileFrame.driveSelected);
+//        dirReader drives = new dirReader();
+//        File[] f1 = drives.getCurrentDrives();
+        File d = new File (FileFrame.driveSelected);
         treemodel = (DefaultTreeModel)dirtree.getModel();
         
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(drive);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(d);
         
         treemodel.reload();
         treemodel = new DefaultTreeModel(root);
         treemodel.setRoot(root);
         
         // lists files and directories in this directory
-        File[] dirs = drive.listFiles();
-        for (File file : dirs) {
-            FileNode fNode = new FileNode(file.toString());
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(fNode);
+        File[] f = d.listFiles();
+        
+        for (File file : f) {
+            //FileNode fNode = new FileNode(file.toString());
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(d);
             root.add(node);
 
             File directory = new File(file.toString());
@@ -64,7 +67,7 @@ public class DirPanel extends JPanel{
                 for(File file2 : subfolder){
                     FileNode fNode2 = new FileNode(file2.toString());
                     DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(fNode2);
-                    root.add(node2);
+                    node.add(node2);
                 }
             }
         }

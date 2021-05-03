@@ -8,7 +8,7 @@ package cecs277filemanager;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-
+import javax.swing.filechooser.FileSystemView;
 /**
  *
  * @author glitc
@@ -17,8 +17,15 @@ public class dirReader {
 
     File currentDrive = new File(FileFrame.driveSelected);
     
+    public File[] getCurrentDrives() {
+
+        File[] files;
+        files = File.listRoots(); //Lists all drives on the computer
+        return files; //Lists all drives on the computer
+
+    }
     
-    public static void main(String[] args){
+    public void fileLister(){
         File file = new File(FileFrame.driveSelected);
         File[] files;
         files = file.listFiles();
@@ -27,17 +34,16 @@ public class dirReader {
 //            DecimalFormat decimalFormat = new DecimalFormat("#,###");
             if (files[i].isDirectory()) {
                 //System.out.println("Directory: " + file1.getAbsolutePath() + " Date:" + dateFormat.format(file1.lastModified()) + " Size:" + decimalFormat.format(file1.length()));
-                File[] directories;
-                directories = files[i].listFiles();
+                File[] dirs;
+                dirs = files[i].listFiles();
                 
             }
-            
-//            else
-//                System.out.println("Files: " + file1.getAbsolutePath() 
-//                        + " Date:" + dateFormat.format(file1.lastModified()) 
-//                        + " Size:" + decimalFormat.format(file1.length()));
         }
     }
     
+    public String getDriveNames(File drive){
+        return FileSystemView.getFileSystemView().getSystemDisplayName(drive);
+
+    }
     
 }

@@ -18,10 +18,9 @@ public class FileFrame extends JInternalFrame{
     JSplitPane splitpane;
     
     public FileFrame(){
-        
-                
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new DirPanel(), new FilePanel());
         splitpane.setDividerLocation(250);
+        
         this.setTitle(driveSelected); // title for drive window however will be changed to the disk name
         
         this.getContentPane().add(splitpane);
