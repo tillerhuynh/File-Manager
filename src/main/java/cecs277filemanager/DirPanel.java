@@ -19,43 +19,38 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author apocryphon
  */
-public final class DirPanel extends JPanel{
+public class DirPanel extends JPanel{
     JScrollPane scrollpane;
     JTree dirtree;
     JPanel panel;
     DefaultTreeModel treemodel;
+    FilePanel f;
     
     public DirPanel(){
-        
-        this.scrollpane = new JScrollPane();
-
+        scrollpane = new JScrollPane();
         dirtree = new JTree();
-        scrollpane.setViewportView(dirtree);
         this.setLayout(new BorderLayout());
         this.add(scrollpane, BorderLayout.CENTER);
+        scrollpane.setViewportView(dirtree);
         add(scrollpane);
-        
-        dirtree.setPreferredSize(new Dimension(400, 400));
-        
+//        dirtree.setPreferredSize(new Dimension(400, 400));
         loadTree();
-
     }
     
     public void loadTree(){
-//        File drive = new File(FileFrame.driveSelected);
-//        dirReader drives = new dirReader();
-//        File[] f1 = drives.getCurrentDrives();
-        File d = new File (FileFrame.driveSelected);
+        
+
+        File rootfile = new File (FileFrame.driveSelected);
         treemodel = (DefaultTreeModel)dirtree.getModel();
         
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(d);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootfile);
         
         treemodel.reload();
         treemodel = new DefaultTreeModel(root);
         treemodel.setRoot(root);
         
         // lists files and directories in this directory
-        File[] subfile = d.listFiles();
+        File[] subfile = rootfile.listFiles();
         
         for (File file : subfile) {
             FileNode fNode = new FileNode(file.toString());
@@ -72,28 +67,38 @@ public final class DirPanel extends JPanel{
                 }
             }
         }
+        dirtree.setModel(treemodel);
     }
     
-//    class SampleTreeSelectionListener implements TreeSelectionListener {
-//
-//        @Override
-//        public void valueChanged(TreeSelectionEvent e) {
-//            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            System.out.println("You selected a node in the tree");
-//            System.out.println(tree.getMaxSelectionRow());
-//            System.out.println(tree.getSelectionPath()); //C:\\Node2\\Subnode0
-//            File file = new File("D:");
-//            System.out.println(file.getAbsolutePath());
-//            
-//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-//            FileNode fn = (FileNode) node.getUserObject();
-//            
-//            System.out.println(fn.toString());
-//        }
-//        
-//    }
-}
+    public void setFilePanel(FilePanel fpanel){
+        f = fpanel;
+    }
     
-//    public void 
-//
-//}
+    class MyTreeSelectionListener implements TreeSelectionListener{
+
+        @Override
+        public void valueChanged(TreeSelectionEvent e) {
+            
+        }
+        
+        
+    }
+    class SampleTreeSelectionListener implements TreeSelectionListener {
+
+        @Override
+        public void valueChanged(TreeSelectionEvent e) {
+            
+            System.out.println("You selected a node in the tree");
+            System.out.println(dirtree.getMaxSelectionRow());
+            System.out.println(dirtree.getSelectionPath()); //C:\\Node2\\Subnode0
+            File file = new File("D:");
+            System.out.println(file.getAbsolutePath());
+            
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) dirtree.getLastSelectedPathComponent();
+            FileNode fn = (FileNode) node.getUserObject();
+            
+            System.out.println(fn.toString());
+        }
+        
+    }
+}
