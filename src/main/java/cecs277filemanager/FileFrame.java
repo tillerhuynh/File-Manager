@@ -13,12 +13,14 @@ import javax.swing.JSplitPane;
  * @author glitc
  */
 public class FileFrame extends JInternalFrame{
-    
-    static String driveSelected = "C:\\";
+    DirPanel dPanel = new DirPanel();
+    FilePanel fPanel = new FilePanel();
+    static String driveSelected = GUI.getDrive;
     JSplitPane splitpane;
     
     public FileFrame(){
-        splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new DirPanel(), new FilePanel());
+        dPanel.setFilePanel(fPanel);
+        splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, dPanel, fPanel);
         splitpane.setDividerLocation(250);
         
         this.setTitle(driveSelected); // title for drive window however will be changed to the disk name

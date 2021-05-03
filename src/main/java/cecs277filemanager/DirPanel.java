@@ -29,6 +29,7 @@ public class DirPanel extends JPanel{
     public DirPanel(){
         scrollpane = new JScrollPane();
         dirtree = new JTree();
+        dirtree.addTreeSelectionListener(new MyTreeSelectionListener());
         this.setLayout(new BorderLayout());
         this.add(scrollpane, BorderLayout.CENTER);
         scrollpane.setViewportView(dirtree);
@@ -78,7 +79,7 @@ public class DirPanel extends JPanel{
 
         @Override
         public void valueChanged(TreeSelectionEvent e) {
-            
+            System.out.println(e.getPath());
         }
         
         

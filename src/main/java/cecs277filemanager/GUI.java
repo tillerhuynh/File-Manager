@@ -11,6 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -22,7 +24,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import java.awt.Dimension;
 
 /**
  *
@@ -36,24 +40,32 @@ class GUI extends JFrame{
     JScrollPane scrollpane;
     JDesktopPane desktopPane;
     dirReader drivereader;
+    JTree tree;
+    static String getDrive = "C:\\";
     
     public GUI(){
-        panel = new JPanel();
+        panel = new JPanel();//        drivePanel = new DirPanel();
         statusbar = new JMenuBar();
         toolBar = new JMenuBar();
         desktopPane = new JDesktopPane();
         panel.setLayout(new BorderLayout());
         drivereader = new dirReader();
-        
+        tree = new JTree();
     }
     
     public void go(){
+        // calls menubuilder to run the menubuilder method 
         MenuBuilder menuBuild = new MenuBuilder();
-        
         this.setJMenuBar(menuBuild.buildMenu());
+        
+//        DirPanel drivePanel = new DirPanel();
         buildtoolBar();
         buildStatusBar();
         panel.add(desktopPane,BorderLayout.CENTER);
+        
+//        panel.add(tree);
+//        this.add(panel);
+//        drivePanel.loadTree();
         
         //creates the frame inside will later need to add an option in the drop down menu to create new panes each time
         FileFrame ff = new FileFrame();
@@ -63,13 +75,14 @@ class GUI extends JFrame{
         this.setTitle("CECS 277 File Manager");
         this.setSize(900,900);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        tree.setPreferredSize(new Dimension(690,499));
         this.setVisible(true);
-
+        
      
   
     }
-  
-     public void buildStatusBar(){
+    
+    public void buildStatusBar(){
         // initializing the file object
         File file = new File(FileFrame.driveSelected);
         
@@ -89,8 +102,9 @@ class GUI extends JFrame{
         statusbar.add(curSize);
         statusbar.add(usedSize);
         statusbar.add(totalSize);
-        
         panel.add(statusbar,BorderLayout.SOUTH);
+        statusbar.repaint();
+        statusbar.validate();
      }
     
 
@@ -108,9 +122,24 @@ class GUI extends JFrame{
         for (File files : drive){
             comboBox.addItem(files.toString() + drivereader.getDriveNames(files));
         }
-        comboBox.addActionListener(new ComboBoxActionListener());
+        ActionListener actionListener = new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               JComboBox cb = (JComboBox)e.getSource();
+               String driveName = (String)cb.getSelectedItem();
+               // need to put drive name into fileframe.driveselected
+               getDrive = driveName;
+               
+               panel.repaint();
+               panel.validate();
+               System.out.println(getDrive);
+            }
+        };
         
+        comboBox.addActionListener(actionListener);
         toolBar.add(comboBox);
+        toolBar.repaint();
+        toolBar.validate();
         
         toolBar.setLayout(new GridBagLayout());
         panel.add(toolBar, BorderLayout.NORTH);
@@ -123,18 +152,20 @@ class GUI extends JFrame{
        
     }
     
-    public class ComboBoxActionListener implements ActionListener{
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JComboBox cb = (JComboBox)e.getSource();
-            String driveName = (String)cb.getSelectedItem();
-            
-       
-        }
-       
-    }
-    
+//    public class ComboBoxActionListener implements ActionListener{
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            JComboBox cb = (JComboBox)e.getSource();
+//            String driveName = (String)cb.getSelectedItem();
+//            driveSelected = driveName;
+//            
+//        }
+//       
+//    }
+    // do something with drive name
+    // check how to use filenode 
+    // make combobox repaint itself
    
        
 }
