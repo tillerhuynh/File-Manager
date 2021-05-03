@@ -83,14 +83,14 @@ public class MenuBuilder extends GUI{
         return menubar;
         
     }
-    private class ExitActionListener implements ActionListener {
+    public class ExitActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
         }
     }
-    private static class cascadeActionListener implements ActionListener {
+    public class cascadeActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -100,7 +100,7 @@ public class MenuBuilder extends GUI{
         }
     }
 
-    private class AboutActionListener implements ActionListener {
+    public class AboutActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {

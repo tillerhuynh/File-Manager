@@ -50,11 +50,9 @@ class GUI extends JFrame{
     public void go(){
         MenuBuilder menuBuild = new MenuBuilder();
         
-//        statBar status = new statBar();
         this.setJMenuBar(menuBuild.buildMenu());
-        buildStatusBar();
         buildtoolBar();
-        
+        buildStatusBar();
         panel.add(desktopPane,BorderLayout.CENTER);
         
         //creates the frame inside will later need to add an option in the drop down menu to create new panes each time
@@ -71,12 +69,29 @@ class GUI extends JFrame{
   
     }
   
-    public void buildStatusBar(){
-        JLabel size = new JLabel("Size in GB:");
-        statusbar.add(size);
-        panel.add(statusbar, BorderLayout.SOUTH);
-        //TODO update the status bar
-    }
+     public void buildStatusBar(){
+        // initializing the file object
+        File file = new File(FileFrame.driveSelected);
+        
+        // getting the total space
+        Long totalSpace = file.getTotalSpace();
+        Long freeSpace = file.getFreeSpace();
+        Long usableSpace = totalSpace - freeSpace;
+        
+        //creating labels for the status bar
+        JLabel curDrive = new JLabel("Current Drive: " + FileFrame.driveSelected);
+        JLabel curSize = new JLabel("     Free Space: " + freeSpace/1000000000 + " GBs");
+        JLabel usedSize = new JLabel("     Used Space: " + usableSpace/1000000000 +" GBs");
+        JLabel totalSize = new JLabel("     Total Space: " + totalSpace/1000000000 +" GBs");
+        
+        
+        statusbar.add(curDrive);
+        statusbar.add(curSize);
+        statusbar.add(usedSize);
+        statusbar.add(totalSize);
+        
+        panel.add(statusbar,BorderLayout.SOUTH);
+     }
     
 
     public void buildtoolBar(){
@@ -87,6 +102,7 @@ class GUI extends JFrame{
         toolBar.add(detailsButton);
         toolBar.add(simpleButton);
         
+        // the dropdown box for the toolbar
         JComboBox comboBox = new JComboBox();
         File[] drive = drivereader.getCurrentDrives();
         for (File files : drive){
@@ -104,6 +120,7 @@ class GUI extends JFrame{
             implement simple
                 simples should redraw the right scrollpane without file sizes and dates
         */
+       
     }
     
     public class ComboBoxActionListener implements ActionListener{
