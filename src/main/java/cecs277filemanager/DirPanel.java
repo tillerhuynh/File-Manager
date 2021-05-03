@@ -19,10 +19,9 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author apocryphon
  */
-public class DirPanel extends JPanel{
-    private JScrollPane scrollpane;
-    private JTree dirtree;
-    JTree tree;
+public final class DirPanel extends JPanel{
+    JScrollPane scrollpane;
+    JTree dirtree;
     JPanel panel;
     DefaultTreeModel treemodel;
     
@@ -37,7 +36,9 @@ public class DirPanel extends JPanel{
         add(scrollpane);
         
         dirtree.setPreferredSize(new Dimension(400, 400));
+        
         loadTree();
+
     }
     
     public void loadTree(){
@@ -54,11 +55,11 @@ public class DirPanel extends JPanel{
         treemodel.setRoot(root);
         
         // lists files and directories in this directory
-        File[] f = d.listFiles();
+        File[] subfile = d.listFiles();
         
-        for (File file : f) {
-            //FileNode fNode = new FileNode(file.toString());
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(d);
+        for (File file : subfile) {
+            FileNode fNode = new FileNode(file.toString());
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(fNode);
             root.add(node);
 
             File directory = new File(file.toString());
@@ -73,24 +74,24 @@ public class DirPanel extends JPanel{
         }
     }
     
-    class SampleTreeSelectionListener implements TreeSelectionListener {
-
-        @Override
-        public void valueChanged(TreeSelectionEvent e) {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            System.out.println("You selected a node in the tree");
-            System.out.println(tree.getMaxSelectionRow());
-            System.out.println(tree.getSelectionPath()); //C:\\Node2\\Subnode0
-            File file = new File("D:");
-            System.out.println(file.getAbsolutePath());
-            
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            FileNode fn = (FileNode) node.getUserObject();
-            
-            System.out.println(fn.toString());
-        }
-        
-    }
+//    class SampleTreeSelectionListener implements TreeSelectionListener {
+//
+//        @Override
+//        public void valueChanged(TreeSelectionEvent e) {
+//            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            System.out.println("You selected a node in the tree");
+//            System.out.println(tree.getMaxSelectionRow());
+//            System.out.println(tree.getSelectionPath()); //C:\\Node2\\Subnode0
+//            File file = new File("D:");
+//            System.out.println(file.getAbsolutePath());
+//            
+//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+//            FileNode fn = (FileNode) node.getUserObject();
+//            
+//            System.out.println(fn.toString());
+//        }
+//        
+//    }
 }
     
 //    public void 
