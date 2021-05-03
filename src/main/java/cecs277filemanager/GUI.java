@@ -93,7 +93,7 @@ class GUI extends JFrame{
             implement simple
                 simples should redraw the right scrollpane without file sizes and dates
         */
-       /////
+       
     }
        
 }
