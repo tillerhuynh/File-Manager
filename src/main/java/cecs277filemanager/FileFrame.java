@@ -31,6 +31,8 @@ public class FileFrame extends JInternalFrame{
         this.setIconifiable(true); // when you minimize it, it becomes an icon
         this.setSize(600, 400); // the size of the drive window
         this.setVisible(true); // the drive window being visible    
+        this.setResizable(true);
+        
     }
     
     

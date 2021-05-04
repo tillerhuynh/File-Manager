@@ -58,15 +58,11 @@ class GUI extends JFrame{
         MenuBuilder menuBuild = new MenuBuilder();
         this.setJMenuBar(menuBuild.buildMenu());
         
-//        DirPanel drivePanel = new DirPanel();
+
         buildtoolBar();
         buildStatusBar();
         panel.add(desktopPane,BorderLayout.CENTER);
-        
-//        panel.add(tree);
-//        this.add(panel);
-//        drivePanel.loadTree();
-        
+
         //creates the frame inside will later need to add an option in the drop down menu to create new panes each time
         FileFrame ff = new FileFrame();
         desktopPane.add(ff);
@@ -77,8 +73,6 @@ class GUI extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tree.setPreferredSize(new Dimension(690,499));
         this.setVisible(true);
-        
-     
   
     }
     
@@ -127,6 +121,7 @@ class GUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                JComboBox cb = (JComboBox)e.getSource();
                String driveName = (String)cb.getSelectedItem();
+               
                // need to put drive name into fileframe.driveselected
                getDrive = driveName;
                
@@ -152,17 +147,7 @@ class GUI extends JFrame{
        
     }
     
-//    public class ComboBoxActionListener implements ActionListener{
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            JComboBox cb = (JComboBox)e.getSource();
-//            String driveName = (String)cb.getSelectedItem();
-//            driveSelected = driveName;
-//            
-//        }
-//       
-//    }
+
     // do something with drive name
     // check how to use filenode 
     // make combobox repaint itself

@@ -39,6 +39,19 @@ public class FilePanel extends JPanel {
         list.setModel(model);
         add(list);
     }
+    
+    public void fillList(File directory){
+        File[] files;
+        
+        files = directory.listFiles();
+        model.clear();
+        list.removeAll();
+        for(int i = 0; i < files.length; i++){
+            if(!files[i].isHidden())
+                model.addElement(files[i].getAbsolutePath());
+        }
+        list.setModel(model);
+    }
     /*************************************************************************
      * class MyDropTarget handles the dropping of files onto its owner
      * (whatever JList it is assigned to). As written, it can process two

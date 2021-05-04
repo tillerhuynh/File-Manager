@@ -80,6 +80,13 @@ public class DirPanel extends JPanel{
         @Override
         public void valueChanged(TreeSelectionEvent e) {
             System.out.println(e.getPath());
+            
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) 
+                    dirtree.getLastSelectedPathComponent();
+            System.out.println(node.toString());
+            if(node.toString().equals("PerfLogs")){
+                f.fillList(new File (FileFrame.driveSelected));
+            }
         }
         
         
