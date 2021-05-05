@@ -28,7 +28,6 @@ public class DirPanel extends JPanel{
     JTree dirtree;
     JPanel panel;
     FilePanel filepanel;
-    boolean currentDisplay;
     String path;
     
     public DirPanel(String curDrive, FileFrame filef){
@@ -40,9 +39,29 @@ public class DirPanel extends JPanel{
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) dirtree.getCellRenderer();
         renderer.setLeafIcon(renderer.getClosedIcon()); // icons for the folders
         dirtree.addTreeExpansionListener(treeExpandListener);
-    }
+        
+        dirtree.addTreeSelectionListener(new TreeSelectionListener(){
+        
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+//                DefaultMutableTreeNode node = (DefaultMutableTreeNode) 
+//                    dirtree.getLastSelectedPathComponent();
+                StringBuilder node = new StringBuilder();
+                TreePath treePath = e.getPath();
+                Object[] paths = treePath.getPath();
+                for (Object part : paths){
+                    node.append(part).append("\\"); // adding the \ to the drive path
+                }
+                path = node.toString();
+                filef.setTitle(path); // setting title of drive path
+                filepanel.fillList(new File(path));
+                filepanel.path = path;
+            }
+        });
+    }   
         
       TreeExpansionListener treeExpandListener = new TreeExpansionListener() {
+ 
           @Override
           public void treeExpanded(TreeExpansionEvent event) {
                 System.out.println(event.getPath());
@@ -112,22 +131,8 @@ public class DirPanel extends JPanel{
 
         }
     }
-    
-    class DirectoryTreeSelectionListener implements TreeSelectionListener {
-        @Override
-        public void valueChanged(TreeSelectionEvent e) {
-            StringBuilder nodePath = new StringBuilder();
-            TreePath treepath = e.getPath();
-            Object[] paths = treepath.getPath();
-            for (Object element : paths)
-                nodePath.append(element).append("\\");
-            System.out.println(nodePath);
-
-        }
-    }
-        
    
-    
+
     public void setFilePanel(FilePanel fpanel){
         filepanel = fpanel;
     }
@@ -135,16 +140,19 @@ public class DirPanel extends JPanel{
     
     
 //    class MyTreeSelectionListener implements TreeSelectionListener{
-//
+//                
 //        @Override
 //        public void valueChanged(TreeSelectionEvent e) {
 //            System.out.println(e.getPath());
-//            
-//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) 
-//                    dirtree.getLastSelectedPathComponent();
+//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) dirtree.getLastSelectedPathComponent();
 //            System.out.println(node.toString());
-//            if(node.toString().equals("PerfLogs")){
-//                f.fillList(new File (FileFrame.driveSelected));
+//            if(node.toString().equals("test")){
+//                filepanel.fillList(new File("B:\\BlackDesert"));
+//            }
+//            //check last node i selected is it empty?
+//            //if there are children > get them
+//            // add to node
+//            // loop while there are still 
 //            }
 //        }
         

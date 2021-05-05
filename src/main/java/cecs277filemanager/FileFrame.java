@@ -16,20 +16,19 @@ import javax.swing.JSplitPane;
 public class FileFrame extends JInternalFrame{
     DirPanel dPanel;
     FilePanel fPanel;
-//    static String driveSelected = GUI.getDrive;
     JSplitPane splitpane;
-    boolean display;
+
     
     public FileFrame(String string){
         
         dPanel = new DirPanel(string, this);
         dPanel.setSize(250,500);
         dPanel.setFilePanel(fPanel);
-        fPanel = new FilePanel(this);
+        fPanel = new FilePanel();
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, dPanel, fPanel);
         splitpane.setDividerLocation(250);
-//        this.setTitle(driveSelected); // title for drive window however will be changed to the disk name
         
+        this.setTitle(string); // title
         this.getContentPane().add(splitpane);
         this.setClosable(true); // the exit button for the drive window
         this.setMaximizable(true); // minimize / max button for drive window
