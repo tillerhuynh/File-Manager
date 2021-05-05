@@ -5,6 +5,7 @@
  */
 package cecs277filemanager;
 
+import java.io.File;
 import javax.swing.JInternalFrame;
 import javax.swing.JSplitPane;
 
@@ -13,17 +14,21 @@ import javax.swing.JSplitPane;
  * @author glitc
  */
 public class FileFrame extends JInternalFrame{
-    DirPanel dPanel = new DirPanel();
-    FilePanel fPanel = new FilePanel();
-    static String driveSelected = GUI.getDrive;
+    DirPanel dPanel;
+    FilePanel fPanel;
+//    static String driveSelected = GUI.getDrive;
     JSplitPane splitpane;
+    boolean display;
     
-    public FileFrame(){
+    public FileFrame(String string){
+        
+        dPanel = new DirPanel(string, this);
+        dPanel.setSize(250,500);
         dPanel.setFilePanel(fPanel);
+        fPanel = new FilePanel(this);
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, dPanel, fPanel);
         splitpane.setDividerLocation(250);
-        
-        this.setTitle(driveSelected); // title for drive window however will be changed to the disk name
+//        this.setTitle(driveSelected); // title for drive window however will be changed to the disk name
         
         this.getContentPane().add(splitpane);
         this.setClosable(true); // the exit button for the drive window

@@ -27,6 +27,8 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.Dimension;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 /**
  *
@@ -38,103 +40,195 @@ class GUI extends JFrame{
     JButton details, simple;
     JMenuBar menubar, statusbar, toolBar;
     JScrollPane scrollpane;
+    FileFrame filef;
     JDesktopPane desktopPane;
-    dirReader drivereader;
     JTree tree;
-    static String getDrive = "C:\\";
+    String currentDrive;
     
     public GUI(){
-        panel = new JPanel();//        drivePanel = new DirPanel();
+        panel = new JPanel();
         statusbar = new JMenuBar();
+        menubar = new JMenuBar();
         toolBar = new JMenuBar();
         desktopPane = new JDesktopPane();
         panel.setLayout(new BorderLayout());
-        drivereader = new dirReader();
+//        drivereader = new dirReader();
         tree = new JTree();
     }
     
     public void go(){
+        JComboBox combo = new JComboBox();
+        currentDrive = "C:\\";
         // calls menubuilder to run the menubuilder method 
-        MenuBuilder menuBuild = new MenuBuilder();
-        this.setJMenuBar(menuBuild.buildMenu());
+        this.setJMenuBar(buildMenu());
         
-
-        buildtoolBar();
-        buildStatusBar();
+        //creates statusbar
+        
+        buildStatusBar(currentDrive);
+        
+        //creates toolbar
+        buildtoolBar(currentDrive, combo);
+        
         panel.add(desktopPane,BorderLayout.CENTER);
 
         //creates the frame inside will later need to add an option in the drop down menu to create new panes each time
-        FileFrame ff = new FileFrame();
-        desktopPane.add(ff);
+        filef = new FileFrame(currentDrive);
+        desktopPane.add(filef);
         
+        //adding panel to frame
         this.add(panel);
+        // setting frame title
         this.setTitle("CECS 277 File Manager");
-        this.setSize(900,900);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tree.setPreferredSize(new Dimension(690,499));
+        this.pack();
+        this.setSize(900,900);
         this.setVisible(true);
   
     }
     
-    public void buildStatusBar(){
-        // initializing the file object
-        File file = new File(FileFrame.driveSelected);
+    public JMenuBar buildMenu(){
+        // this creates the top bar 
+        JMenu fileMenu,helpMenu, windowMenu, treeMenu;
+        fileMenu = new JMenu("File");
+        treeMenu = new JMenu("Tree");
+        windowMenu = new JMenu("Window");
+        helpMenu = new JMenu("Help");
         
-        // getting the total space
-        Long totalSpace = file.getTotalSpace();
-        Long freeSpace = file.getFreeSpace();
-        Long usableSpace = totalSpace - freeSpace;
+        // File Menu Item
+        JMenuItem rename = new JMenuItem("Rename");
+        JMenuItem copy = new JMenuItem("Copy");
+        JMenuItem delete = new JMenuItem("Delete");
+        JMenuItem run = new JMenuItem("Run");
+        JMenuItem exit = new JMenuItem("Exit");
+        
+        // adding File Menu Items
+        fileMenu.add(rename);
+        fileMenu.add(copy);
+        fileMenu.add(delete);
+        fileMenu.add(run);
+        fileMenu.add(exit);
+        
+        //File Menu Action Listeners
+//        rename.addActionListener(new RenameActionListener());
+//        copy.addActionListener(new CopyActionListener());
+//        delete.addActionListener(new DeleteActionListener());
+//        run.addActionListener(new RunActionListener());
+        exit.addActionListener(new ExitActionListener());
+ 
+        
+        // Tree Menu Items
+        JMenuItem expandBr = new JMenuItem("Expand Branch");
+        JMenuItem collapseBr = new JMenuItem("Collapse Branch");
+        
+        // adding Tree Menu Items
+        treeMenu.add(expandBr);
+        treeMenu.add(collapseBr);
+        
+        // Tree Menu Action Listeners
+//        expandBr.addActionListener(new ActionListener());
+//        collapseBr.addActionListener(new ActionListener());
+        
+
+        
+        // Window Menu Items
+        
+        JMenuItem newWindow = new JMenuItem("New");
+        JMenuItem cascade = new JMenuItem("Cascade");
+        
+        windowMenu.add(newWindow);
+        windowMenu.add(cascade);
+        
+        // Window Menu Action Listeners
+        newWindow.addActionListener(new newWindowActionListener());
+        cascade.addActionListener(new cascadeActionListener());
+
+        
+        // Help Menu Items
+        
+        JMenuItem help = new JMenuItem("Help");
+        JMenuItem about = new JMenuItem("About");
+        helpMenu.add(help);
+        helpMenu.add(about);
+        
+        // help menu action listeners
+        about.addActionListener(new AboutActionListener());
+        
+
+        
+        // adds the menubar choices
+        menubar.add(fileMenu);
+        menubar.add(treeMenu);
+        menubar.add(windowMenu);
+        menubar.add(helpMenu);
+        
+        // adds menubar to the frame
+        this.setJMenuBar(menubar);
+        return menubar;
+        
+    }
+
+            
+    public void buildStatusBar(String dir){
+        statusbar.removeAll();
+        dirReader dirRead = new dirReader();
+        
         
         //creating labels for the status bar
-        JLabel curDrive = new JLabel("Current Drive: " + FileFrame.driveSelected);
-        JLabel curSize = new JLabel("     Free Space: " + freeSpace/1000000000 + " GBs");
-        JLabel usedSize = new JLabel("     Used Space: " + usableSpace/1000000000 +" GBs");
-        JLabel totalSize = new JLabel("     Total Space: " + totalSpace/1000000000 +" GBs");
+        JLabel curDrive = new JLabel("Current Drive: " + dir);
+        JLabel curSize = new JLabel("     Free Space: " + dirRead.getFreeSpace() + " GBs");
+        JLabel usedSize = new JLabel("     Used Space: " + dirRead.getUsableSpace()+" GBs");
+        JLabel totalSize = new JLabel("     Total Space: " + dirRead.getTotalSpace() +" GBs");
         
-        
+        //adding labels to status bar
         statusbar.add(curDrive);
         statusbar.add(curSize);
         statusbar.add(usedSize);
         statusbar.add(totalSize);
+        
+        
         panel.add(statusbar,BorderLayout.SOUTH);
         statusbar.repaint();
         statusbar.validate();
+        
      }
     
 
-    public void buildtoolBar(){
-
+    public void buildtoolBar(String drive, JComboBox comboBox){
+        dirReader dirRead = new dirReader();
+        
         // the buttons for the toolbar
         JButton detailsButton = new JButton("Details");
         JButton simpleButton = new JButton("Simple");
-        toolBar.add(detailsButton);
-        toolBar.add(simpleButton);
+       
         
         // the dropdown box for the toolbar
-        JComboBox comboBox = new JComboBox();
-        File[] drive = drivereader.getCurrentDrives();
-        for (File files : drive){
-            comboBox.addItem(files.toString() + drivereader.getDriveNames(files));
-        }
+        File[] drives = dirRead.getCurrentDrives();
+        comboBox = new JComboBox(drives);
+        JComboBox cb = comboBox;
+        
+        
         ActionListener actionListener = new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-               JComboBox cb = (JComboBox)e.getSource();
-               String driveName = (String)cb.getSelectedItem();
-               
-               // need to put drive name into fileframe.driveselected
-               getDrive = driveName;
-               
+                
+               String driveName = (String)cb.getSelectedItem().toString() ;
+               dirRead.setDirect(driveName);
+               buildStatusBar(driveName);
+               currentDrive = driveName;
+
                panel.repaint();
-               panel.validate();
-               System.out.println(getDrive);
+               
+               System.out.println(currentDrive);
             }
         };
         
         comboBox.addActionListener(actionListener);
         toolBar.add(comboBox);
+        toolBar.add(detailsButton);
+        toolBar.add(simpleButton);
         toolBar.repaint();
-        toolBar.validate();
+        toolBar.revalidate();
         
         toolBar.setLayout(new GridBagLayout());
         panel.add(toolBar, BorderLayout.NORTH);
@@ -146,8 +240,53 @@ class GUI extends JFrame{
         */
        
     }
-    
 
+    public class ExitActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
+    }
+    public class cascadeActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    }
+
+    public class AboutActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            AboutDig dig = new AboutDig(null, true);
+            dig.setVisible(true);
+        }
+    }
+
+    public class newWindowActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            FileFrame ff = new FileFrame(currentDrive);
+            desktopPane.add(ff);
+            
+            ff.addInternalFrameListener(new InternalFrameAdapter(){
+                public void internalFrame(InternalFrameEvent e){
+                    String str = ff.getTitle();
+                    str = str.substring(0,3);
+                    buildStatusBar(str);
+                }
+            });
+        }
+    }   
+        
+    /*  TODO
+            New creates a new internal frame DONE
+            places it at location 0,100 within the desktop pane. 
+            It defaults to C:. Any number of new frames can be created.
+            */ 
     // do something with drive name
     // check how to use filenode 
     // make combobox repaint itself

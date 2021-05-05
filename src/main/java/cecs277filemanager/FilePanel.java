@@ -15,6 +15,9 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -30,27 +33,54 @@ import javax.swing.JPanel;
 public class FilePanel extends JPanel {
     JList list = new JList();
     DefaultListModel model = new DefaultListModel();
+    boolean display;
+    JList list2 = new JList();
+    DefaultListModel model2 = new DefaultListModel();
+    Path currentDirectory;
     
-    public FilePanel(){
+    public FilePanel(FileFrame filef){
         list.setPreferredSize(new Dimension(500,500));
         this.setDropTarget(new MyDropTarget());
         list.setDragEnabled(true);
-
         list.setModel(model);
         add(list);
     }
     
-    public void fillList(File directory){
+    public void fillList(File dir, boolean display) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         File[] files;
-        
-        files = directory.listFiles();
+        String details;
+        this.display = display;
+        int counter = 0;
+
+        files = dir.listFiles();
         model.clear();
+        model2.clear();
         list.removeAll();
+        list2.removeAll();
         for(int i = 0; i < files.length; i++){
-            if(!files[i].isHidden())
-                model.addElement(files[i].getAbsolutePath());
+            if (!files[i].isHidden() ){ //&& files[i].isDirectory()
+                if (display) {
+                    // two variables.
+                    String test = files[i].getName();
+                    details = String.format("%-50s %10s %20s", test,
+                            sdf.format(files[i].lastModified()), files[i].length() + "B");
+                    model.addElement(details);
+                    model2.addElement(test);
+                }
+                else{
+                    model.addElement(files[i].getName());
+                    model2.addElement(files[i].getName());
+                }
+            if(counter == 0){
+                this.currentDirectory = Paths.get(files[i].getParent());
+                counter++;
+            }
+            }
         }
         list.setModel(model);
+        list2.setModel(model2);
+
     }
     /*************************************************************************
      * class MyDropTarget handles the dropping of files onto its owner
